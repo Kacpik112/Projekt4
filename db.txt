@@ -5,3 +5,5 @@ Janusz 40
 Krzysztof 20
 Janusz 40
 Jakub 18
+kacper 55
+Kacper 33
