@@ -28,14 +28,11 @@ public class Student {
     return birthDate;
   }
 
-  // Metoda toString wyświetla wszystkie dane o studencie
   @Override
   public String toString() {
     return name + " " + lastName + " " + age + " " + birthDate;
   }
 
-  // Metoda parse konwertuje linijkę tekstu na obiekt Student.
-  // Oczekujemy 4 pól rozdzielonych spacjami: imię, nazwisko, wiek, data urodzenia.
   public static Student parse(String str) {
     String[] data = str.split(" ");
     if (data.length != 4) {

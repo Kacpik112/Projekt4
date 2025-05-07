@@ -20,6 +20,7 @@ class Main {
         System.out.println("2 - Wyświetl wszystkich studentów");
         System.out.println("3 - Wyszukaj studentów po imieniu");
         System.out.println("4 - Usuń studenta");
+        System.out.println("5 - Zaktualizuj dane studenta (zmień wiek)");
         System.out.print("Twój wybór: ");
         int choice = Integer.parseInt(scanner.nextLine());
 
@@ -83,7 +84,7 @@ class Main {
             System.out.print("Podaj imię do wyszukania: ");
             String searchName = scanner.nextLine();
             Collection<Student> foundStudents = s.findStudentByName(searchName);
-            if (foundStudents == null || foundStudents.isEmpty()) {
+            if (foundStudents.isEmpty()) {
               System.out.println("Brak studentów o podanym imieniu.");
             } else {
               System.out.println("Znaleziono następujących studentów:");
@@ -103,11 +104,38 @@ class Main {
             System.out.println("Student (lub studenci) o podanych danych został/usunięty/(-e), jeśli istniał(-i).");
             break;
 
+          case 5:
+            System.out.print("Podaj imię studenta do aktualizacji: ");
+            String updName = scanner.nextLine();
+            System.out.print("Podaj nazwisko studenta do aktualizacji: ");
+            String updLastName = scanner.nextLine();
+
+            int newAge = 0;
+            boolean validNewAge = false;
+            while (!validNewAge) {
+              System.out.print("Podaj nowy wiek studenta: ");
+              try {
+                newAge = Integer.parseInt(scanner.nextLine());
+                validNewAge = true;
+              } catch (NumberFormatException e) {
+                System.out.println("Wiek musi być liczbą. Spróbuj ponownie.");
+              }
+            }
+
+            int updateCount = s.updateStudentAge(updName, updLastName, newAge);
+            if (updateCount == 0) {
+              System.out.println("Brak studenta o podanych danych.");
+            } else {
+              System.out.println("Zaktualizowano wiek dla " + updateCount + " studenta(-ów).");
+            }
+            break;
+
           default:
             System.out.println("Niepoprawna opcja. Spróbuj ponownie.");
             break;
         }
       }
+
       scanner.close();
 
     } catch (IOException e) {

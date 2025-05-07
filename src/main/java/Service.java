@@ -31,6 +31,13 @@ public class Service {
     return ret;
   }
 
+  /**
+   * Wyszukuje studentów po imieniu.
+   *
+   * @param name Imię, według którego szukamy studentów (ignorując wielkość liter).
+   * @return Kolekcja studentów z pasującym imieniem.
+   * @throws IOException Jeżeli wystąpi problem odczytu bazy danych.
+   */
   public Collection<Student> findStudentByName(String name) throws IOException {
     Collection<Student> allStudents = getStudents();
     Collection<Student> result = new ArrayList<>();
@@ -43,32 +50,64 @@ public class Service {
   }
 
   /**
-   * Usuwa studenta (lub studentów) na podstawie imienia i nazwiska.
-   * Odczytuje wszystkich studentów, filtruje listę usuwając obiekty, które mają
-   * podane imię oraz nazwisko, a następnie nadpisuje plik db.txt pozostałymi danymi.
+   * Usuwa studenta (lub studentów) na podstawie imienia oraz nazwiska.
    *
    * @param name Imię studenta do usunięcia.
    * @param lastName Nazwisko studenta do usunięcia.
    * @throws IOException Jeżeli wystąpi problem odczytu lub zapisu pliku.
    */
   public void removeStudent(String name, String lastName) throws IOException {
-    // Odczytaj wszystkich studentów z pliku
     Collection<Student> students = getStudents();
     Collection<Student> updatedStudents = new ArrayList<>();
 
-    // Dodaj do nowej kolekcji tylko tych studentów, którzy nie odpowiadają podanym danym
+    // Dodajemy tylko te wpisy, które nie odpowiadają podanym danym.
     for (Student student : students) {
       if (!(student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName))) {
         updatedStudents.add(student);
       }
     }
 
-    // Nadpisz plik "db.txt" danymi z kolekcji updatedStudents
     try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt", false))) {
       for (Student student : updatedStudents) {
         writer.write(student.toString());
         writer.newLine();
       }
     }
+  }
+
+  /**
+   * Aktualizuje wiek studenta/ów po podaniu imienia i nazwiska.
+   * Dla każdego studenta spełniającego kryteria tworzy nowy obiekt z nowym wiekiem, a resztę danych zachowuje.
+   *
+   * @param name Imię studenta do aktualizacji.
+   * @param lastName Nazwisko studenta do aktualizacji.
+   * @param newAge Nowy wiek studenta.
+   * @return Liczba zaktualizowanych rekordów.
+   * @throws IOException Jeżeli wystąpi problem odczytu lub zapisu pliku.
+   */
+  public int updateStudentAge(String name, String lastName, int newAge) throws IOException {
+    Collection<Student> students = getStudents();
+    Collection<Student> updatedStudents = new ArrayList<>();
+    int updateCount = 0;
+
+    for (Student student : students) {
+      if (student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName)) {
+        // Tworzymy nowy obiekt z nowym wiekiem, zachowując pozostałe dane.
+        Student updatedStudent = new Student(student.getName(), student.getLastName(), newAge, student.getBirthDate());
+        updatedStudents.add(updatedStudent);
+        updateCount++;
+      } else {
+        updatedStudents.add(student);
+      }
+    }
+
+    // Nadpisujemy plik "db.txt" zaktualizowaną listą studentów.
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt", false))) {
+      for (Student s : updatedStudents) {
+        writer.write(s.toString());
+        writer.newLine();
+      }
+    }
+    return updateCount;
   }
 }
