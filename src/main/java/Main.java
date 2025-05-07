@@ -12,16 +12,23 @@ class Main {
       Scanner scanner = new Scanner(System.in);
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-      boolean tak = true;
-      while (tak) {
+      boolean running = true;
+      while (running) {
         System.out.println("\nWybierz opcję:");
+        System.out.println("0 - Zakończ program");
         System.out.println("1 - Dodaj studenta");
         System.out.println("2 - Wyświetl wszystkich studentów");
         System.out.println("3 - Wyszukaj studentów po imieniu");
+        System.out.println("4 - Usuń studenta");
         System.out.print("Twój wybór: ");
         int choice = Integer.parseInt(scanner.nextLine());
 
         switch (choice) {
+          case 0:
+            System.out.println("Program został zakończony.");
+            running = false;
+            break;
+
           case 1:
             System.out.print("Podaj imię studenta: ");
             String name = scanner.nextLine();
@@ -68,16 +75,15 @@ class Main {
             Collection<Student> students = s.getStudents();
             System.out.println("📋 Lista studentów:");
             for (Student current : students) {
-              System.out.println(current.toString());
+              System.out.println(current);
             }
             break;
 
           case 3:
-            // Wyszukiwanie studentów po imieniu
             System.out.print("Podaj imię do wyszukania: ");
             String searchName = scanner.nextLine();
             Collection<Student> foundStudents = s.findStudentByName(searchName);
-            if (foundStudents.isEmpty()) {
+            if (foundStudents == null || foundStudents.isEmpty()) {
               System.out.println("Brak studentów o podanym imieniu.");
             } else {
               System.out.println("Znaleziono następujących studentów:");
@@ -85,6 +91,16 @@ class Main {
                 System.out.println(student);
               }
             }
+            break;
+
+          case 4:
+            System.out.print("Podaj imię studenta do usunięcia: ");
+            String delName = scanner.nextLine();
+            System.out.print("Podaj nazwisko studenta do usunięcia: ");
+            String delLastName = scanner.nextLine();
+
+            s.removeStudent(delName, delLastName);
+            System.out.println("Student (lub studenci) o podanych danych został/usunięty/(-e), jeśli istniał(-i).");
             break;
 
           default:

@@ -31,13 +31,6 @@ public class Service {
     return ret;
   }
 
-  /**
-   * Wyszukuje studentów po imieniu.
-   *
-   * @param name Imię, według którego szukamy studentów. Porównanie odbywa się ignorując wielkość liter.
-   * @return Kolekcja studentów, których pole name odpowiada podanemu imieniu.
-   * @throws IOException Jeżeli wystąpi problem odczytu bazy danych.
-   */
   public Collection<Student> findStudentByName(String name) throws IOException {
     Collection<Student> allStudents = getStudents();
     Collection<Student> result = new ArrayList<>();
@@ -47,5 +40,35 @@ public class Service {
       }
     }
     return result;
+  }
+
+  /**
+   * Usuwa studenta (lub studentów) na podstawie imienia i nazwiska.
+   * Odczytuje wszystkich studentów, filtruje listę usuwając obiekty, które mają
+   * podane imię oraz nazwisko, a następnie nadpisuje plik db.txt pozostałymi danymi.
+   *
+   * @param name Imię studenta do usunięcia.
+   * @param lastName Nazwisko studenta do usunięcia.
+   * @throws IOException Jeżeli wystąpi problem odczytu lub zapisu pliku.
+   */
+  public void removeStudent(String name, String lastName) throws IOException {
+    // Odczytaj wszystkich studentów z pliku
+    Collection<Student> students = getStudents();
+    Collection<Student> updatedStudents = new ArrayList<>();
+
+    // Dodaj do nowej kolekcji tylko tych studentów, którzy nie odpowiadają podanym danym
+    for (Student student : students) {
+      if (!(student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName))) {
+        updatedStudents.add(student);
+      }
+    }
+
+    // Nadpisz plik "db.txt" danymi z kolekcji updatedStudents
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt", false))) {
+      for (Student student : updatedStudents) {
+        writer.write(student.toString());
+        writer.newLine();
+      }
+    }
   }
 }
