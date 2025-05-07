@@ -3,18 +3,21 @@ import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 
 class Main {
   public static void main(String[] args) {
     try {
       Service s = new Service();
       Scanner scanner = new Scanner(System.in);
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
       boolean tak = true;
       while (tak) {
         System.out.println("\nWybierz opcję:");
         System.out.println("1 - Dodaj studenta");
         System.out.println("2 - Wyświetl wszystkich studentów");
+        System.out.println("3 - Wyszukaj studentów po imieniu");
         System.out.print("Twój wybór: ");
         int choice = Integer.parseInt(scanner.nextLine());
 
@@ -41,7 +44,6 @@ class Main {
             // Walidacja daty urodzenia
             String birthDate = "";
             boolean validDate = false;
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             while (!validDate) {
               System.out.print("Podaj datę urodzenia studenta (dd-MM-yyyy): ");
               String inputDate = scanner.nextLine();
@@ -63,10 +65,25 @@ class Main {
             break;
 
           case 2:
-            var students = s.getStudents();
+            Collection<Student> students = s.getStudents();
             System.out.println("📋 Lista studentów:");
             for (Student current : students) {
               System.out.println(current.toString());
+            }
+            break;
+
+          case 3:
+            // Wyszukiwanie studentów po imieniu
+            System.out.print("Podaj imię do wyszukania: ");
+            String searchName = scanner.nextLine();
+            Collection<Student> foundStudents = s.findStudentByName(searchName);
+            if (foundStudents.isEmpty()) {
+              System.out.println("Brak studentów o podanym imieniu.");
+            } else {
+              System.out.println("Znaleziono następujących studentów:");
+              for (Student student : foundStudents) {
+                System.out.println(student);
+              }
             }
             break;
 

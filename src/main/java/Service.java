@@ -23,7 +23,7 @@ public class Service {
     String line = "";
     while (true) {
       line = reader.readLine();
-      if(line == null)
+      if (line == null)
         break;
       ret.add(Student.parse(line));
     }
@@ -31,7 +31,21 @@ public class Service {
     return ret;
   }
 
-  public Student findStudentByName(String name) {
-    return null;
+  /**
+   * Wyszukuje studentów po imieniu.
+   *
+   * @param name Imię, według którego szukamy studentów. Porównanie odbywa się ignorując wielkość liter.
+   * @return Kolekcja studentów, których pole name odpowiada podanemu imieniu.
+   * @throws IOException Jeżeli wystąpi problem odczytu bazy danych.
+   */
+  public Collection<Student> findStudentByName(String name) throws IOException {
+    Collection<Student> allStudents = getStudents();
+    Collection<Student> result = new ArrayList<>();
+    for (Student student : allStudents) {
+      if (student.getName().equalsIgnoreCase(name)) {
+        result.add(student);
+      }
+    }
+    return result;
   }
 }
